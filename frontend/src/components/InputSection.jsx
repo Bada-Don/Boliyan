@@ -22,13 +22,13 @@ const InputSection = ({
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.6 }}
-      className={`flex items-end gap-2 sm:gap-4 p-3 sm:p-4 rounded-2xl sm:rounded-3xl border-2 backdrop-blur-lg ${
+      className={`flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-2xl sm:rounded-3xl border-2 backdrop-blur-lg ${
         isDarkMode
           ? 'bg-gray-900/30 border-gray-700/50'
           : 'bg-white/40 border-gray-200/50'
       }`}
     >
-      <div className="flex-1">
+      <div className="flex-1 ">
         <textarea
           ref={textareaRef}
           value={text}
@@ -54,7 +54,7 @@ const InputSection = ({
         whileTap={{ scale: 0.95 }}
         onClick={onTransliterate}
         disabled={!text.trim() || isLoading}
-        className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 flex-shrink-0 ${
+        className={`p-3 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 flex-shrink-0 ${
           !text.trim() || isLoading
             ? 'bg-gray-400/50 cursor-not-allowed'
             : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-purple-500/25'

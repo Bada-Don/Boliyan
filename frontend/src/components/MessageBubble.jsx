@@ -15,7 +15,7 @@ const MessageBubble = ({
 }) => {
   const isUser = message.type === 'user';
   const isExpanded = expandedFeedback === message.id;
-  const [useAnmolLipi, setUseAnmolLipi] = useState(false);
+  const [useAnmolLipi, setUseAnmolLipi] = useState(true);
   const [copied, setCopied] = useState(false);
   const [feedbackDisabled, setFeedbackDisabled] = useState(false);
 
@@ -49,14 +49,14 @@ const MessageBubble = ({
           {!isUser && !message.isError && (
             <div className="flex gap-2 mt-2">
               <button
-                className={`px-2 py-1 rounded text-xs border ${useAnmolLipi ? 'bg-purple-100 border-purple-400 text-purple-700' : 'bg-gray-100 border-gray-300 text-gray-700'}`}
+                className={`px-2 py-1 rounded text-xs border ${useAnmolLipi ? 'bg-[#14182c] border-purple-400 text-white' : 'bg-[14182c] border-gray-300 text-white'}`}
                 onClick={() => setUseAnmolLipi((prev) => !prev)}
                 title="Toggle AnmolLipi Font"
               >
                 {useAnmolLipi ? 'Default Font' : 'AnmolLipi Font'}
               </button>
               <button
-                className="px-2 py-1 rounded text-xs bg-gray-100 border border-gray-300 text-gray-700"
+                className="px-2 py-1 rounded text-xs bg-transparent border border-white text-white"
                 onClick={async () => {
                   await navigator.clipboard.writeText(message.content);
                   setCopied(true);
@@ -70,7 +70,7 @@ const MessageBubble = ({
           )}
         </motion.div>
 
-        {!isUser && !message.isError && (
+        {!isUser && !message.isError && !feedbackDisabled && !isExpanded && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -119,7 +119,9 @@ const MessageBubble = ({
               feedbackForm={feedbackForm}
               setFeedbackForm={setFeedbackForm}
               submitCorrection={submitCorrection}
-              onClose={() => setFeedbackDisabled(true)}
+              onClose={() => {
+                if (typeof window !== 'undefined' && window.onFeedbackFormClose) window.onFeedbackFormClose();
+              }}
             />
           )}
         </AnimatePresence>

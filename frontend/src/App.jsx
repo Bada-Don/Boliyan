@@ -34,6 +34,11 @@ const TransliterationApp = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    window.onFeedbackFormClose = () => setExpandedFeedback(null);
+    return () => { window.onFeedbackFormClose = null; };
+  }, []);
+
   const handleTransliterate = async () => {
     if (!text.trim()) return;
 
