@@ -1,3 +1,5 @@
+# backend/app.py
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
@@ -8,6 +10,8 @@ from config import *
 from anmol_transliterate import transliterate_punjabi
 from utils.vocab import CharVocab
 import re
+import csv
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -28,7 +32,6 @@ model.load_state_dict(checkpoint['model'])
 model.eval()
 
 def split_text(text):
-    # Split words but retain delimiters (spaces, hyphens, dots)
     return re.findall(r'[^\s\-\.]+|[\s\-\.]', text)
 
 def infer_sequence(text):
@@ -47,25 +50,40 @@ def infer_sequence(text):
 def transliterate():
     data = request.get_json()
     text = data.get("text", "").strip()
+    language = data.get("language", "punjabi")  # Extendable for multi-language support
 
     if not text:
         return jsonify({"error": "Empty input"}), 400
 
     parts = split_text(text)
-    punjabi_parts = []
     anmol_parts = []
 
     for part in parts:
-        if re.match(r'[^\s\-\.]+', part): # it's a word
-            pun, anm = infer_sequence(part)
-        else:  # it's a separator or punctuation
-            pun, anm = part, part
-        punjabi_parts.append(pun)
-        anmol_parts.append(anm)
+        if re.match(r'[^\s\-\.]+', part):
+            _, anmol = infer_sequence(part)
+        else:
+            anmol = part
+        anmol_parts.append(anmol)
 
     return jsonify({
-        "anmol": ''.join(anmol_parts),
+        "anmol": ''.join(anmol_parts)
     })
+
+@app.route('/contribute', methods=['POST'])
+def contribute():
+    data = request.get_json()
+    key = data.get("key", "").strip()
+    value = data.get("value", "").strip()
+
+    if not key or not value:
+        return jsonify({"error": "Both key and value are required."}), 400
+
+    os.makedirs("contributions", exist_ok=True)
+    with open("contributions/user_feedback.csv", "a", newline='', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([key, value])
+
+    return jsonify({"status": "success", "message": "Thank you for contributing!"})
 
 if __name__ == "__main__":
     app.run(debug=True)
