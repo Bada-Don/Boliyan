@@ -40,7 +40,7 @@ const FeedbackForm = ({
           type="text"
           placeholder="English text"
           value={feedbackForm.english}
-          onChange={(e) => setFeedbackForm(prev => ({...prev, english: e.target.value}))}
+          onChange={(e) => setFeedbackForm(prev => ({...prev, english: e.target.value.toLowerCase()}))}
           className={`w-full px-3 py-2 text-sm sm:text-base rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50 ${
             isDarkMode
               ? 'bg-gray-700/50 border-gray-600 text-white placeholder-gray-400'

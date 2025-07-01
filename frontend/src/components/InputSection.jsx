@@ -32,7 +32,7 @@ const InputSection = ({
         <textarea
           ref={textareaRef}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => setText(e.target.value.toLowerCase())}
           onKeyPress={onKeyPress}
           onInput={handleTextareaInput}
           placeholder="Type your message here..."
