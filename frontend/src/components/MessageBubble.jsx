@@ -1,5 +1,5 @@
 // components/MessageBubble.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HandThumbUpIcon, HandThumbDownIcon } from '@heroicons/react/24/solid';
 import FeedbackForm from './FeedbackForm';
@@ -15,6 +15,9 @@ const MessageBubble = ({
 }) => {
   const isUser = message.type === 'user';
   const isExpanded = expandedFeedback === message.id;
+  const [useAnmolLipi, setUseAnmolLipi] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [feedbackDisabled, setFeedbackDisabled] = useState(false);
 
   return (
     <motion.div
@@ -41,7 +44,30 @@ const MessageBubble = ({
               : 'bg-white/80 text-gray-900 border-gray-200/30'
           }`}
         >
-          <p className="leading-relaxed break-words">{message.content}</p>
+          <p className={`leading-relaxed break-words ${!isUser && useAnmolLipi ? 'anmol-lipi' : ''}`}>{message.content}</p>
+          {/* Font toggle and copy button for bot messages */}
+          {!isUser && !message.isError && (
+            <div className="flex gap-2 mt-2">
+              <button
+                className={`px-2 py-1 rounded text-xs border ${useAnmolLipi ? 'bg-purple-100 border-purple-400 text-purple-700' : 'bg-gray-100 border-gray-300 text-gray-700'}`}
+                onClick={() => setUseAnmolLipi((prev) => !prev)}
+                title="Toggle AnmolLipi Font"
+              >
+                {useAnmolLipi ? 'Default Font' : 'AnmolLipi Font'}
+              </button>
+              <button
+                className="px-2 py-1 rounded text-xs bg-gray-100 border border-gray-300 text-gray-700"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(message.content);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1200);
+                }}
+                title="Copy to clipboard"
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          )}
         </motion.div>
 
         {!isUser && !message.isError && (
@@ -60,7 +86,11 @@ const MessageBubble = ({
               <motion.button
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => onFeedback(message.id, true)}
+                onClick={() => {
+                  onFeedback(message.id, true);
+                  setFeedbackDisabled(true);
+                }}
+                disabled={feedbackDisabled}
                 className="p-1.5 sm:p-2 rounded-full hover:bg-green-500/20 text-green-500 transition-colors"
               >
                 <HandThumbUpIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -68,7 +98,11 @@ const MessageBubble = ({
               <motion.button
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => onFeedback(message.id, false)}
+                onClick={() => {
+                  onFeedback(message.id, false);
+                  setFeedbackDisabled(true);
+                }}
+                disabled={feedbackDisabled}
                 className="p-1.5 sm:p-2 rounded-full hover:bg-red-500/20 text-red-500 transition-colors"
               >
                 <HandThumbDownIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -85,6 +119,7 @@ const MessageBubble = ({
               feedbackForm={feedbackForm}
               setFeedbackForm={setFeedbackForm}
               submitCorrection={submitCorrection}
+              onClose={() => setFeedbackDisabled(true)}
             />
           )}
         </AnimatePresence>
