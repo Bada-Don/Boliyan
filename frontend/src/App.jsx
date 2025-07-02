@@ -48,7 +48,7 @@ const TransliterationApp = () => {
     setText('');
 
     try {
-      const response = await axios.post('http://localhost:5000/transliterate', {
+      const response = await axios.post('https://boliyan.onrender.com/transliterate', {
         text: text.trim(),
         language: selectedLanguage
       });
@@ -85,7 +85,7 @@ const TransliterationApp = () => {
 
   const submitCorrection = async (messageId) => {
     try {
-      await axios.post('http://localhost:5000/contribute', {
+      await axios.post('https://boliyan.onrender.com/contribute', {
         key: feedbackForm.english,
         value: feedbackForm.corrected
       });

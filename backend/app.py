@@ -84,6 +84,3 @@ def contribute():
         writer.writerow([key, value])
 
     return jsonify({"status": "success", "message": "Thank you for contributing!"})
-
-if __name__ == "__main__":
-    app.run(debug=True)
