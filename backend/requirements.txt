@@ -3,3 +3,4 @@ flask-cors
 torch>=1.13
 pandas
 scikit-learn     # if you're using evaluation scripts
+gunicorn
