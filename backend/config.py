@@ -10,8 +10,8 @@ CHECKPOINT_PATH = os.path.join(BASE_DIR, "checkpoints", "seq2seq_model.pt")
 # Model + Training Hyperparams
 EMBED_SIZE = 256
 HIDDEN_SIZE = 512
-NUM_LAYERS = 2
-DROPOUT = 0.0
+NUM_LAYERS = 1
+DROPOUT = 0.2
 
 BATCH_SIZE = 32
 NUM_EPOCHS = 50
